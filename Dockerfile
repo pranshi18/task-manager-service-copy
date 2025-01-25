@@ -3,23 +3,33 @@
 # COPY ${JAR_FILE} app.jar
 # ENTRYPOINT ["java","-jar","/app.jar"]
 
-# Stage 1: Build the application with Maven
-FROM maven:3.9.4-openjdk-21-slim AS build
+# Stage 1: Build the application
+FROM maven:3.9.5-eclipse-temurin-21 as builder
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy pom.xml and source code
+# Copy the pom.xml and download dependencies
 COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the source code
 COPY src ./src
 
-# Build the application, skipping tests
+# Build the application (generates the JAR in the target folder)
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run the application with OpenJDK 21
-FROM openjdk:21-jdk-slim
+# Stage 2: Run the application
+FROM eclipse-temurin:21-jdk
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the JAR file from the build stage
-COPY --from=build /app/target/task-manager-0.0.1-SNAPSHOT.jar app.jar
+# Copy the JAR from the builder stage
+COPY --from=builder /app/target/*.jar app.jar
 
-# Run the Spring Boot application
+# Expose the port your Spring Boot app runs on
+EXPOSE 8080
+
+# Command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -62,6 +62,7 @@ public class SecurityConfig{
         public CorsConfigurationSource corsConfigurationSource() {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.addAllowedOrigin("http://localhost:4200");
+            configuration.addAllowedOrigin("https://pranshi18.github.io");
             // Frontend URL
             configuration.addAllowedMethod("*"); // Allow all methods (GET, POST, PUT, DELETE, etc.)
             configuration.addAllowedHeader("*"); // Allow all headers

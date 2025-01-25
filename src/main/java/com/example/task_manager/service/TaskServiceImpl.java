@@ -74,4 +74,18 @@ public class TaskServiceImpl implements TaskService{
 
         taskListRepository.save(taskDetails);
     }
+
+    @Override
+    public void deleteCompletedTasks(String username) {
+        TaskList taskDetails = taskListRepository.findByUsername(username);
+        List<Task> taskList = new ArrayList<>();
+
+        taskDetails.getTask_list().forEach((task) -> {
+            if(!task.isCompleted())
+                taskList.add(task);
+        });
+
+        taskDetails.setTask_list(taskList);
+        taskListRepository.save(taskDetails);
+    }
 }

@@ -77,4 +77,15 @@ public class RestController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("/deleteCompletedTasks")
+    public ResponseEntity<Map<String, String>> deleteCompletedTasks(){
+        String username = getAuthenticatedUsername();
+        try{
+            taskService.deleteCompletedTasks(username);
+            return ResponseEntity.ok(Map.of("messsage", "deleted completed tasks"));
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

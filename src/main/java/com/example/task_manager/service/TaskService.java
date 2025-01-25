@@ -12,4 +12,6 @@ public interface TaskService {
     TaskList getAllTasks(String username);
 
     void updateTask(String username, Task task);
+
+    void deleteCompletedTasks(String username);
 }

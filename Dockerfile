@@ -4,18 +4,28 @@
 # ENTRYPOINT ["java","-jar","/app.jar"]
 
 
-
-# Build stage
-FROM maven:3.9.4-openjdk-22-slim AS builder
+# Stage 1: Build the application with Maven and Java 21
+FROM maven:3.9.4-openjdk-17-slim AS build
 WORKDIR /app
-COPY . .
+
+# Set the Java version in Maven
+ENV JAVA_VERSION 21
+
+# Copy pom.xml and source code
+COPY pom.xml .
+COPY src ./src
+
+# Build the application, skipping tests
 RUN mvn clean package -DskipTests
 
-# Runtime stage
-FROM openjdk:22-jdk-slim
+# Stage 2: Run the application with OpenJDK 21
+FROM openjdk:21-jdk-slim
 WORKDIR /app
-COPY --from=builder /app/target/task-manager-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
 
+# Copy the JAR file from the build stage
+COPY --from=build /app/target/task-manager-0.0.1-SNAPSHOT.jar app.jar
+
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 

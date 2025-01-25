@@ -4,7 +4,7 @@
 # ENTRYPOINT ["java","-jar","/app.jar"]
 
 # Stage 1: Build the application with Maven
-FROM maven:3.9.4-openjdk-17 AS build
+FROM maven:3.9.4-openjdk-21-slim AS build
 WORKDIR /app
 
 # Copy pom.xml and source code
@@ -23,4 +23,3 @@ COPY --from=build /app/target/task-manager-0.0.1-SNAPSHOT.jar app.jar
 
 # Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
